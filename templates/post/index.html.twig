@@ -23,6 +23,18 @@
                         {% endif %}
                         
                     {{ post.likes|length }}
+
+                    {% if app.user.id != post.author.id  %}
+                    {% if post.author in app.user.following %}
+                    <form method="post" action="{{ path('app_user_unfollow', {'id': post.author.id}) }}">
+                         <button type="submit">Unfollow</button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="{{ path('app_user_follow', {'id': post.author.id}) }}">
+                         <button type="submit">Follow</button>
+                    </form>
+                    {% endif %}
+                    {% endif %}
             {% endif %}
         {% else %}
                 <p>No hay posts.</p>

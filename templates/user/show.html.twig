@@ -6,6 +6,17 @@
     <h1>{{user.username}}</h1>
     <img src="{{ asset('img/' ~ user.picture) }}" alt="{{user.username}}">
 
+    <h3>Followers</h3>
+    {% for follower in user.followers %}
+        <img src="{{ asset('img/' ~ follower.picture) }}" alt="{{follower.username}}">
+        <h4>{{follower.username}}</h4>
+    {% endfor %}
+    <h3>Following</h3>
+    {% for following in user.following %}
+        <img src="{{ asset('img/' ~ following.picture) }}" alt="{{following.username}}">
+        <h4>{{following.username}}</h4>
+    {% endfor %}
+    
     <h2>Publicaciones</h2>
     {% for post in user.posts %}
         <a href="{{ path('app_post_show', {'id': post.id}) }}">

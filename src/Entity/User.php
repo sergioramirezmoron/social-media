@@ -55,27 +55,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, self>
      */
     #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'followers')]
-    private Collection $followers;
-
-    /**
-     * @var Collection<int, self>
-     */
-    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'followings')]
+    #[ORM\JoinTable(name: 'user_follow')]
+    #[ORM\JoinColumn(name: 'follower_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(name: 'followed_id', referencedColumnName: 'id')]
     private Collection $following;
 
-    /**
-     * @var Collection<int, self>
-     */
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'following')]
-    private Collection $followings;
+    private Collection $followers;
 
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->likes = new ArrayCollection();
-        $this->followers = new ArrayCollection();
         $this->following = new ArrayCollection();
-        $this->followings = new ArrayCollection();
+        $this->followers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -148,7 +141,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __serialize(): array
     {
         $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+        $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
 
         return $data;
     }
@@ -231,56 +224,52 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, self>
      */
-    public function getFollowers(): Collection
-    {
-        return $this->followers;
-    }
-
-    public function addFollower(self $follower): static
-    {
-        if (!$this->followers->contains($follower)) {
-            $this->followers->add($follower);
-        }
-
-        return $this;
-    }
-
-    public function removeFollower(self $follower): static
-    {
-        $this->followers->removeElement($follower);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, self>
-     */
     public function getFollowing(): Collection
     {
         return $this->following;
     }
 
-    public function addFollowing(self $following): static
+    public function addFollowing(User $user): static
     {
-        if (!$this->following->contains($following)) {
-            $this->following->add($following);
+        if (!$this->following->contains($user)) {
+            $this->following->add($user);
+            $user->addFollower($this);
+        }
+        return $this;
+    }
+
+    public function removeFollowing(User $user): static
+    {
+        if ($this->following->removeElement($user)) {
+            $user->removeFollower($this);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getFollowers(): Collection
+    {
+        return $this->followers;
+    }
+
+    public function addFollower(User $follower): static
+    {
+        if (!$this->followers->contains($follower)) {
+            $this->followers->add($follower);
+            $follower->addFollowing($this);
         }
 
         return $this;
     }
 
-    public function removeFollowing(self $following): static
+    public function removeFollower(User $follower): static
     {
-        $this->following->removeElement($following);
+        if ($this->followers->removeElement($follower)) {
+            $follower->removeFollowing($this);
+        }
 
         return $this;
-    }
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getFollowings(): Collection
-    {
-        return $this->followings;
     }
 }

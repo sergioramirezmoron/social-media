@@ -18,6 +18,7 @@
         </thead>
         <tbody>
         {% for user in users %}
+        {% if not (app.user.id == user.id) %}
             <tr>
                 <td>{{ user.id }}</td>
                 <td>{{ user.username }}</td>
@@ -27,8 +28,20 @@
                 <td>
                     <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
                     <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
+                    
+                    {% if user in app.user.following %}
+                    <form method="post" action="{{ path('app_user_unfollow', {'id': user.id}) }}">
+                         <button type="submit">Unfollow</button>
+                    </form>
+                    {% else %}
+                    <form method="post" action="{{ path('app_user_follow', {'id': user.id}) }}">
+                         <button type="submit">Follow</button>
+                    </form>
+                    {% endif %}
+                    
                 </td>
             </tr>
+            {% endif %}
         {% else %}
             <tr>
                 <td colspan="6">no records found</td>

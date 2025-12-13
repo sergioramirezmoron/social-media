@@ -98,4 +98,45 @@ final class UserController extends AbstractController
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/{id}/follow', name: 'app_user_follow', methods: ['POST'])]
+    public function follow(
+        User $user,
+        EntityManagerInterface $em
+    ): Response {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+
+        if (!$currentUser || $currentUser === $user) {
+            return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        if (!$currentUser->getFollowing()->contains($user)) {
+            $currentUser->addFollowing($user);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/unfollow', name: 'app_user_unfollow', methods: ['POST'])]
+    public function unfollow(
+        User $user,
+        EntityManagerInterface $em
+    ): Response {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+
+        if (!$currentUser || $currentUser === $user) {
+            return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        // CORRECCIÓN: quitar el "not"
+        if ($currentUser->getFollowing()->contains($user)) {
+            $currentUser->removeFollowing($user);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('app_post_index', [], Response::HTTP_SEE_OTHER);
+    }
 }
