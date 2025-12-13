@@ -44,6 +44,8 @@
                     {% endif %}
                     
                     <span class="post-likes-count">{{ post.likes|length }} me gusta</span>
+
+                    <a href="{{ path('app_comment_new', {'post': post.id}) }}">Comentar</a>
                     
                     {% if app.user.id != post.author.id %}
                         {% if post.author in app.user.following %}
