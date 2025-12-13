@@ -1,11 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Post{% endblock %}
+{% block title %}Nueva Publicación{% endblock %}
 
 {% block body %}
-    <h1>Create new Post</h1>
+<div class="form-container">
+    <h1>Crear Nueva Publicación</h1>
 
     {{ include('post/_form.html.twig') }}
 
-    <a href="{{ path('app_post_index') }}">back to list</a>
+    <div style="margin-top: 1.5rem;">
+        <a href="{{ path('app_post_index') }}" class="btn btn-secondary">Volver al inicio</a>
+    </div>
+</div>
 {% endblock %}

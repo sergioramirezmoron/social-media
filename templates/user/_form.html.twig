@@ -1,4 +1,27 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_start(form, {'attr': {'class': 'form'}}) }}
+    {% if form.username is defined %}
+    <div class="form-group">
+        {{ form_label(form.username) }}
+        {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.username) }}
+    </div>
+    {% endif %}
+    
+    {% if form.picture is defined %}
+    <div class="form-group">
+        {{ form_label(form.picture) }}
+        {{ form_widget(form.picture, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.picture) }}
+    </div>
+    {% endif %}
+    
+    {% if form.roles is defined %}
+    <div class="form-group">
+        {{ form_label(form.roles) }}
+        {{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.roles) }}
+    </div>
+    {% endif %}
+    
+    <button class="btn btn-primary" type="submit">{{ button_label|default('Guardar') }}</button>
 {{ form_end(form) }}

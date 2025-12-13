@@ -3,40 +3,70 @@
 {% block title %}Post index{% endblock %}
 
 {% block body %}
-        {% for post in posts %}
-            {% if post.visible %}
+<div class="post-feed">
+    {% for post in posts %}
+        {% if post.visible %}
+        <article class="post-card">
+            <div class="post-header">
+                {% if post.author.picture %}
+                    <img src="{{ asset('img/' ~ post.author.picture) }}" alt="{{ post.author.username }}" class="post-author-avatar">
+                {% else %}
+                    <div class="post-author-avatar" style="background-color: #ddd; display: flex; align-items: center; justify-content: center; color: #999; font-weight: bold;">{{ post.author.username|first|upper }}</div>
+                {% endif %}
+                <a href="{{ path('app_user_show', {'id': post.author.id}) }}" class="post-author-name">{{ post.author.username }}</a>
+                <span class="post-date">{{ post.createdAt ? post.createdAt|date('d/m/Y H:i') : '' }}</span>
+            </div>
             
-                {{post.author.username}}
+            {% if post.image %}
+            <div class="post-image-container">
                 <a href="{{ path('app_post_show', {'id': post.id}) }}">
-                    <img src="{{ asset('img/' ~ post.image) }}" alt="{{post.title}}">
+                    <img src="{{ asset('img/' ~ post.image) }}" alt="{{ post.title }}" class="post-image">
                 </a>
-                {{ post.title }}
-                {{ post.content }}
-                {{ post.createdAt ? post.createdAt|date('Y-m-d H:i:s') : '' }}
-                                  
-                        <a href="{{ path('app_post_show', {'id': post.id}) }}">show</a>
-                        <a href="{{ path('app_post_edit', {'id': post.id}) }}">edit</a>
-                        {% if app.user and post in app.user.likes %}
-                            <a href="{{ path('app_post_dislike', {'id': post.id}) }}">Dislike</a>
-                        {% else %}
-                            <a href="{{ path('app_post_like', {'id': post.id}) }}">Like</a>
-                        {% endif %}
-                        
-                    {{ post.likes|length }}
-
-                    {% if app.user.id != post.author.id  %}
-                    {% if post.author in app.user.following %}
-                    <form method="post" action="{{ path('app_user_unfollow', {'id': post.author.id}) }}">
-                         <button type="submit">Unfollow</button>
-                    </form>
-                    {% else %}
-                    <form method="post" action="{{ path('app_user_follow', {'id': post.author.id}) }}">
-                         <button type="submit">Follow</button>
-                    </form>
-                    {% endif %}
-                    {% endif %}
+            </div>
             {% endif %}
-        {% else %}
-                <p>No hay posts.</p>
-        {% endfor %}
+            
+            <h2 class="post-title">{{ post.title }}</h2>
+            <div class="post-content">{{ post.content }}</div>
+            
+            <div class="post-actions">
+                {% if app.user %}
+                    {% if app.user.id == post.author.id %}
+                        <a href="{{ path('app_post_show', {'id': post.id}) }}" class="post-action-btn">Ver</a>
+                        <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="post-action-btn">Editar</a>
+                    {% else %}
+                        <a href="{{ path('app_post_show', {'id': post.id}) }}" class="post-action-btn">Ver</a>
+                    {% endif %}
+                    
+                    {% if post in app.user.likes %}
+                        <a href="{{ path('app_post_dislike', {'id': post.id}) }}" class="post-action-btn like-btn liked">❤️ Dislike</a>
+                    {% else %}
+                        <a href="{{ path('app_post_like', {'id': post.id}) }}" class="post-action-btn like-btn">🤍 Like</a>
+                    {% endif %}
+                    
+                    <span class="post-likes-count">{{ post.likes|length }} me gusta</span>
+                    
+                    {% if app.user.id != post.author.id %}
+                        {% if post.author in app.user.following %}
+                            <form method="post" action="{{ path('app_user_unfollow', {'id': post.author.id}) }}" style="display: inline;">
+                                <button type="submit" class="unfollow-btn">Dejar de seguir</button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="{{ path('app_user_follow', {'id': post.author.id}) }}" style="display: inline;">
+                                <button type="submit" class="follow-btn">Seguir</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    <a href="{{ path('app_post_show', {'id': post.id}) }}" class="post-action-btn">Ver</a>
+                    <span class="post-likes-count">{{ post.likes|length }} me gusta</span>
+                {% endif %}
+            </div>
+        </article>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <p>No hay posts.</p>
+        </div>
+    {% endfor %}
+</div>
 {% endblock %}

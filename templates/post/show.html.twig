@@ -1,20 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Post{% endblock %}
+{% block title %}{{ post.title }}{% endblock %}
 
 {% block body %}
-    <h1>Post</h1>
-
-                
-                    <img src="{{ asset('img/' ~ post.image) }}" alt="{{post.title}}">
-                {{ post.title }}
-                {{ post.content }}
-                {{ post.createdAt ? post.createdAt|date('Y-m-d H:i:s') : '' }}
-                {{ post.image }}
-            
-    <a href="{{ path('app_post_index') }}">Volver</a>
-
-    <a href="{{ path('app_post_edit', {'id': post.id}) }}">Editar</a>
-
-    {{ include('post/_delete_form.html.twig') }}
+<div class="post-detail">
+    <div class="post-header">
+        {% if post.author.picture %}
+            <img src="{{ asset('img/' ~ post.author.picture) }}" alt="{{ post.author.username }}" class="post-author-avatar">
+        {% else %}
+            <div class="post-author-avatar" style="background-color: #ddd; display: flex; align-items: center; justify-content: center; color: #999; font-weight: bold;">{{ post.author.username|first|upper }}</div>
+        {% endif %}
+        <a href="{{ path('app_user_show', {'id': post.author.id}) }}" class="post-author-name">{{ post.author.username }}</a>
+        <span class="post-date">{{ post.createdAt ? post.createdAt|date('d/m/Y H:i') : '' }}</span>
+    </div>
+    
+    {% if post.image %}
+        <img src="{{ asset('img/' ~ post.image) }}" alt="{{ post.title }}">
+    {% endif %}
+    
+    <h1>{{ post.title }}</h1>
+    <div class="post-content">{{ post.content }}</div>
+    
+    <div class="post-actions">
+        <a href="{{ path('app_post_index') }}" class="btn btn-secondary">Volver</a>
+        {% if app.user and app.user.id == post.author.id %}
+            <a href="{{ path('app_post_edit', {'id': post.id}) }}" class="btn btn-primary">Editar</a>
+            {{ include('post/_delete_form.html.twig') }}
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

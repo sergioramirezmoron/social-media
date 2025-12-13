@@ -1,54 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}User index{% endblock %}
+{% block title %}Usuarios{% endblock %}
 
 {% block body %}
-    <h1>User index</h1>
+<div style="max-width: 1000px; margin: 0 auto; padding: 2rem;">
+    <h1 style="margin-bottom: 2rem;">Usuarios</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Username</th>
-                <th>Roles</th>
-                <th>Password</th>
-                <th>Picture</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for user in users %}
-        {% if not (app.user.id == user.id) %}
-            <tr>
-                <td>{{ user.id }}</td>
-                <td>{{ user.username }}</td>
-                <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-                <td>{{ user.password }}</td>
-                <td>{{ user.picture }}</td>
-                <td>
-                    <a href="{{ path('app_user_show', {'id': user.id}) }}">show</a>
-                    <a href="{{ path('app_user_edit', {'id': user.id}) }}">edit</a>
-                    
-                    {% if user in app.user.following %}
-                    <form method="post" action="{{ path('app_user_unfollow', {'id': user.id}) }}">
-                         <button type="submit">Unfollow</button>
-                    </form>
-                    {% else %}
-                    <form method="post" action="{{ path('app_user_follow', {'id': user.id}) }}">
-                         <button type="submit">Follow</button>
-                    </form>
-                    {% endif %}
-                    
-                </td>
-            </tr>
-            {% endif %}
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_user_new') }}">Create new</a>
+    {% if users|length > 0 %}
+        <div style="display: grid; gap: 1rem;">
+            {% for user in users %}
+                {% if not (app.user.id == user.id) %}
+                    <div style="background-color: var(--card-background); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem; box-shadow: var(--shadow);">
+                        <a href="{{ path('app_user_show', {'id': user.id}) }}">
+                            {% if user.picture %}
+                                <img src="{{ asset('img/' ~ user.picture) }}" alt="{{ user.username }}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color);">
+                            {% else %}
+                                <div style="width: 60px; height: 60px; border-radius: 50%; background-color: #ddd; display: flex; align-items: center; justify-content: center; color: #999; font-weight: bold; font-size: 1.5rem;">{{ user.username|first|upper }}</div>
+                            {% endif %}
+                        </a>
+                        <div style="flex: 1;">
+                            <a href="{{ path('app_user_show', {'id': user.id}) }}" style="text-decoration: none; color: var(--text-primary); font-weight: 600; font-size: 1.1rem;">
+                                {{ user.username }}
+                            </a>
+                        </div>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            {% if user in app.user.following %}
+                                <form method="post" action="{{ path('app_user_unfollow', {'id': user.id}) }}" style="display: inline;">
+                                    <button type="submit" class="unfollow-btn">Dejar de seguir</button>
+                                </form>
+                            {% else %}
+                                <form method="post" action="{{ path('app_user_follow', {'id': user.id}) }}" style="display: inline;">
+                                    <button type="submit" class="follow-btn">Seguir</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>No se encontraron usuarios.</p>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

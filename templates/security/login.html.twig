@@ -1,34 +1,48 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Iniciar Sesión{% endblock %}
 
 {% block body %}
-<form method="post">
-    {% if error %}
-        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-    {% endif %}
-
+<div class="form-container">
+    <h1>Iniciar Sesión</h1>
+    
     {% if app.user %}
-        <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+        <div class="alert" style="background-color: #e3f2fd; color: #1976d2; border: 1px solid #90caf9; margin-bottom: 1.5rem;">
+            Ya estás conectado como {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}" style="color: #1976d2; font-weight: 600;">Cerrar Sesión</a>
         </div>
     {% endif %}
 
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <label for="inputUsername">Username</label>
-    <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
-    <label for="inputPassword">Password</label>
-    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
-    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+    <form method="post">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
 
-    <div class="checkbox mb-3">
-        <label>
-            <input type="checkbox" name="_remember_me"> Remember me
-        </label>
-    </div>
+        <div class="form-group">
+            <label for="inputUsername">Usuario</label>
+            <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
+        </div>
+        
+        <div class="form-group">
+            <label for="inputPassword">Contraseña</label>
+            <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+        </div>
+        
+        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
 
-    <button class="btn btn-lg btn-primary" type="submit">
-        Sign in
-    </button>
-</form>
+        <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer;">
+                <input type="checkbox" name="_remember_me" style="width: auto;">
+                <span>Recordarme</span>
+            </label>
+        </div>
+
+        <button class="btn btn-primary" type="submit" style="width: 100%;">
+            Iniciar Sesión
+        </button>
+        
+        <div style="margin-top: 1.5rem; text-align: center;">
+            <a href="{{ path('app_register') }}" style="color: var(--primary-color); text-decoration: none;">¿No tienes cuenta? Regístrate</a>
+        </div>
+    </form>
+</div>
 {% endblock %}
