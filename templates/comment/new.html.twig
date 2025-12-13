@@ -1,11 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Comment{% endblock %}
+{% block title %}Nuevo Comentario{% endblock %}
 
 {% block body %}
-    <h1>Create new Comment</h1>
-
-    {{ include('comment/_form.html.twig') }}
-
-    <a href="{{ path('app_comment_index') }}">back to list</a>
+<div class="comment-form-container">
+    <div class="comment-form-header">
+        <a href="{{ path('app_post_show', {'id': post.id}) }}" class="comment-form-back-btn">
+            <span>←</span>
+            <span>Volver al post</span>
+        </a>
+        <h1>Añadir Comentario</h1>
+        <p style="color: var(--text-secondary); margin-top: 0.5rem;">Comentando en el post de <strong>{{ post.author.username }}</strong></p>
+    </div>
+    
+    <div class="comment-form-card">
+        {{ include('comment/_form.html.twig') }}
+    </div>
+</div>
 {% endblock %}

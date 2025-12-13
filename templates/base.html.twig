@@ -12,19 +12,49 @@
         {% endblock %}
     </head>
     <body>
-    <header>
-        <nav>
-            <a href="{{ path('app_post_index') }}">Inicio</a>
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <div class="sidebar-logo">
+                    <h2>📱 Social</h2>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="{{ path('app_post_index') }}" class="nav-item">
+                        <span class="nav-icon">🏠</span>
+                        <span class="nav-text">Inicio</span>
+                    </a>
 
-            {% if app.user %}
-                <a href="{{ path('app_post_new')}}">Crear Publicación</a>
-                <a href="{{ path('app_user_show', {'id': app.user.id}) }}">Mi perfil</a>
-            {% else %}
-                <a href="{{ path('app_login') }}">Iniciar sesión</a>
-                <a href="{{ path('app_register') }}">Registrarse</a>
-            {% endif %}
-        </nav>
-    </header>
-        {% block body %}{% endblock %}
+                    {% if app.user %}
+                        <a href="{{ path('app_post_new')}}" class="nav-item">
+                            <span class="nav-icon">➕</span>
+                            <span class="nav-text">Crear Publicación</span>
+                        </a>
+                        <a href="{{ path('app_user_index')}}" class="nav-item">
+                            <span class="nav-icon">🔍</span>
+                            <span class="nav-text">Buscar Usuarios</span>
+                        </a>
+                        <a href="{{ path('app_user_show', {'id': app.user.id}) }}" class="nav-item">
+                            <span class="nav-icon">👤</span>
+                            <span class="nav-text">Mi Perfil</span>
+                        </a>
+                        <a href="{{ path('app_logout') }}" class="nav-item nav-item-logout">
+                            <span class="nav-icon">🚪</span>
+                            <span class="nav-text">Cerrar Sesión</span>
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_login') }}" class="nav-item">
+                            <span class="nav-icon">🔑</span>
+                            <span class="nav-text">Iniciar Sesión</span>
+                        </a>
+                        <a href="{{ path('app_register') }}" class="nav-item">
+                            <span class="nav-icon">📝</span>
+                            <span class="nav-text">Registrarse</span>
+                        </a>
+                    {% endif %}
+                </nav>
+            </div>
+        </aside>
+        <main class="main-content">
+            {% block body %}{% endblock %}
+        </main>
     </body>
 </html>

@@ -3,27 +3,27 @@
 {% block title %}Usuarios{% endblock %}
 
 {% block body %}
-<div style="max-width: 1000px; margin: 0 auto; padding: 2rem;">
-    <h1 style="margin-bottom: 2rem;">Usuarios</h1>
+<div class="users-container">
+    <h1>Usuarios</h1>
 
     {% if users|length > 0 %}
-        <div style="display: grid; gap: 1rem;">
+        <div class="users-list">
             {% for user in users %}
                 {% if not (app.user.id == user.id) %}
-                    <div style="background-color: var(--card-background); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; gap: 1.5rem; box-shadow: var(--shadow);">
+                    <div class="user-card">
                         <a href="{{ path('app_user_show', {'id': user.id}) }}">
                             {% if user.picture %}
-                                <img src="{{ asset('img/' ~ user.picture) }}" alt="{{ user.username }}" style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--border-color);">
+                                <img src="{{ asset('img/' ~ user.picture) }}" alt="{{ user.username }}" class="user-card-avatar">
                             {% else %}
-                                <div style="width: 60px; height: 60px; border-radius: 50%; background-color: #ddd; display: flex; align-items: center; justify-content: center; color: #999; font-weight: bold; font-size: 1.5rem;">{{ user.username|first|upper }}</div>
+                                <div class="user-card-avatar avatar-placeholder">{{ user.username|first|upper }}</div>
                             {% endif %}
                         </a>
-                        <div style="flex: 1;">
-                            <a href="{{ path('app_user_show', {'id': user.id}) }}" style="text-decoration: none; color: var(--text-primary); font-weight: 600; font-size: 1.1rem;">
+                        <div class="user-card-info">
+                            <a href="{{ path('app_user_show', {'id': user.id}) }}" class="user-card-name">
                                 {{ user.username }}
                             </a>
                         </div>
-                        <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div class="user-card-actions">
                             {% if user in app.user.following %}
                                 <form method="post" action="{{ path('app_user_unfollow', {'id': user.id}) }}" style="display: inline;">
                                     <button type="submit" class="unfollow-btn">Dejar de seguir</button>
