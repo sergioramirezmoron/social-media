@@ -12,6 +12,19 @@
         {% endblock %}
     </head>
     <body>
+    <header>
+        <nav>
+            <a href="{{ path('app_post_index') }}">Inicio</a>
+
+            {% if app.user %}
+                <a href="{{ path('app_post_new')}}">Crear Publicación</a>
+                <a href="{{ path('app_user_show', {'id': app.user.id}) }}">Mi perfil</a>
+            {% else %}
+                <a href="{{ path('app_login') }}">Iniciar sesión</a>
+                <a href="{{ path('app_register') }}">Registrarse</a>
+            {% endif %}
+        </nav>
+    </header>
         {% block body %}{% endblock %}
     </body>
 </html>

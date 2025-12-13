@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Post index{% endblock %}
+
+{% block body %}
+        {% for post in posts %}
+            {% if post.visible %}
+            
+                {{post.author.username}}
+                <a href="{{ path('app_post_show', {'id': post.id}) }}">
+                    <img src="{{ asset('img/' ~ post.image) }}" alt="{{post.title}}">
+                </a>
+                {{ post.title }}
+                {{ post.content }}
+                {{ post.createdAt ? post.createdAt|date('Y-m-d H:i:s') : '' }}
+                                  
+                        <a href="{{ path('app_post_show', {'id': post.id}) }}">show</a>
+                        <a href="{{ path('app_post_edit', {'id': post.id}) }}">edit</a>
+                        {% if app.user and post in app.user.likes %}
+                            <a href="{{ path('app_post_dislike', {'id': post.id}) }}">Dislike</a>
+                        {% else %}
+                            <a href="{{ path('app_post_like', {'id': post.id}) }}">Like</a>
+                        {% endif %}
+                        
+                    {{ post.likes|length }}
+            {% endif %}
+        {% else %}
+                <p>No hay posts.</p>
+        {% endfor %}
+{% endblock %}
