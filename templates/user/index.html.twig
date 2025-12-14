@@ -6,31 +6,57 @@
 <div class="users-container">
     <h1>Usuarios</h1>
 
+    {# Barra de búsqueda #}
+    <form method="get" action="{{ path('app_user_index') }}" class="mb-3">
+        <input
+            type="text"
+            name="search"
+            placeholder="Buscar usuario..."
+            value="{{ search }}"
+        >
+        <button type="submit">Buscar</button>
+    </form>
+
     {% if users|length > 0 %}
         <div class="users-list">
             {% for user in users %}
-                {% if not (app.user.id == user.id) %}
+                {% if app.user.id != user.id %}
                     <div class="user-card">
                         <a href="{{ path('app_user_show', {'id': user.id}) }}">
                             {% if user.picture %}
-                                <img src="{{ asset('img/' ~ user.picture) }}" alt="{{ user.username }}" class="user-card-avatar">
+                                <img
+                                    src="{{ asset('img/' ~ user.picture) }}"
+                                    alt="{{ user.username }}"
+                                    class="user-card-avatar"
+                                >
                             {% else %}
-                                <div class="user-card-avatar avatar-placeholder">{{ user.username|first|upper }}</div>
+                                <div class="user-card-avatar avatar-placeholder">
+                                    {{ user.username|first|upper }}
+                                </div>
                             {% endif %}
                         </a>
+
                         <div class="user-card-info">
-                            <a href="{{ path('app_user_show', {'id': user.id}) }}" class="user-card-name">
+                            <a
+                                href="{{ path('app_user_show', {'id': user.id}) }}"
+                                class="user-card-name"
+                            >
                                 {{ user.username }}
                             </a>
                         </div>
+
                         <div class="user-card-actions">
                             {% if user in app.user.following %}
-                                <form method="post" action="{{ path('app_user_unfollow', {'id': user.id}) }}" style="display: inline;">
-                                    <button type="submit" class="unfollow-btn">Dejar de seguir</button>
+                                <form method="post" action="{{ path('app_user_unfollow', {'id': user.id}) }}">
+                                    <button type="submit" class="unfollow-btn">
+                                        Dejar de seguir
+                                    </button>
                                 </form>
                             {% else %}
-                                <form method="post" action="{{ path('app_user_follow', {'id': user.id}) }}" style="display: inline;">
-                                    <button type="submit" class="follow-btn">Seguir</button>
+                                <form method="post" action="{{ path('app_user_follow', {'id': user.id}) }}">
+                                    <button type="submit" class="follow-btn">
+                                        Seguir
+                                    </button>
                                 </form>
                             {% endif %}
                         </div>
@@ -40,7 +66,11 @@
         </div>
     {% else %}
         <div class="empty-state">
-            <p>No se encontraron usuarios.</p>
+            {% if search %}
+                <p>No se encontraron usuarios que coincidan con “{{ search }}”.</p>
+            {% else %}
+                <p>No hay usuarios para mostrar.</p>
+            {% endif %}
         </div>
     {% endif %}
 </div>

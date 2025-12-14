@@ -17,10 +17,21 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 final class UserController extends AbstractController
 {
     #[Route(name: 'app_user_index', methods: ['GET'])]
-    public function index(UserRepository $userRepository): Response
-    {
+    public function index(
+        Request $request,
+        UserRepository $userRepository
+    ): Response {
+        $search = $request->query->get('search');
+
+        if ($search) {
+            $users = $userRepository->findByUsernameLike($search);
+        } else {
+            $users = $userRepository->findAll();
+        }
+
         return $this->render('user/index.html.twig', [
-            'users' => $userRepository->findAll(),
+            'users' => $users,
+            'search' => $search,
         ]);
     }
 
